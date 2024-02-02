@@ -18,18 +18,16 @@ class FileView extends StatelessWidget {
   Widget build(BuildContext context) {
     IconData iconData;
     String fileName = '';
-    String fileExtension = '';
 
     // 根据文件类型设置相应的图标和文件名
     if (file is File) {
-      iconData = Icons.insert_drive_file;
+      iconData = Icons.insert_drive_file_outlined;
       fileName = file.path.split('/').last;
-      fileExtension = fileName.split('.').last;
     } else if (file is Directory) {
       iconData = Icons.folder;
       fileName = file.path.split('/').last;
     } else {
-      iconData = Icons.insert_drive_file;
+      iconData = Icons.insert_drive_file_outlined;
       fileName = 'Unknown';
     }
 
@@ -39,9 +37,12 @@ class FileView extends StatelessWidget {
         width: 100,
         child: Column(
           children: [
-            Icon(iconData),
+            Icon(
+              iconData,
+              size: 50,
+              color: file is Directory ? Colors.orangeAccent : Colors.grey,
+            ),
             Text(fileName),
-            Text(fileExtension.isNotEmpty ? '.$fileExtension' : ''),
           ],
         ),
       ),

@@ -74,7 +74,7 @@ class _FileBrowserState extends State<FileBrowser> {
                 spacing: 8.0,
                 runSpacing: 8.0,
                 alignment: WrapAlignment.start, // 对齐方式
-                children: files.map((fileEntity) {
+                children: filterFiles(sortFiles(files)).map((fileEntity) {
                   return FileView(
                       file: fileEntity,
                       onPressed: (file) {
@@ -110,5 +110,27 @@ class _FileBrowserState extends State<FileBrowser> {
         dir = path;
       });
     }
+  }
+
+  List<FileSystemEntity> sortFiles(List<FileSystemEntity> files) {
+    files.sort((a, b) {
+      bool isDirectoryA = a is Directory;
+      bool isDirectoryB = b is Directory;
+
+      if (isDirectoryA && !isDirectoryB) {
+        return -1; // 目录排在前面
+      } else if (!isDirectoryA && isDirectoryB) {
+        return 1; // 文件排在后面
+      } else {
+        return a.path.compareTo(b.path); // 其他情况按路径字母顺序排序
+      }
+    });
+    return files;
+  }
+
+  List<FileSystemEntity> filterFiles(List<FileSystemEntity> files) {
+    return files
+        .where((file) => !file.path.split('/').last.startsWith('.'))
+        .toList();
   }
 }
