@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/const.dart';
+import 'package:photo_wall/src/explorer/breadcrumb.dart';
 import 'package:photo_wall/src/explorer/file_view.dart';
 
 class FileBrowser extends StatefulWidget {
@@ -38,19 +39,15 @@ class _FileBrowserState extends State<FileBrowser> {
           ),
           child: Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.folder_open),
-                onPressed: onBackFolder,
-              ),
               Expanded(
-                child: Text(
-                    dir.replaceAll(ROOT_PATH, '/').replaceAll('//', '/'),
-                    style: const TextStyle(fontSize: 22)),
+                child: Breadcrumb(dir: dir, onGoFolder: onGoFolder),
               ),
-              IconButton(
-                icon: const Icon(Icons.reply),
-                onPressed: onBackFolder,
-              ),
+              dir != ROOT_PATH
+                  ? IconButton(
+                      icon: const Icon(Icons.reply),
+                      onPressed: onBackFolder,
+                    )
+                  : const Text(''),
               IconButton(
                 icon: const Icon(Icons.favorite),
                 onPressed: () {
@@ -97,9 +94,17 @@ class _FileBrowserState extends State<FileBrowser> {
   void onBackFolder() {
     RegExp regExp = RegExp(r'/[^/]*$');
     late String newDir = dir.replaceAll(regExp, '');
-    if (dir != ROOT_PATH) {
+    if (newDir.contains(ROOT_PATH)) {
       setState(() {
         dir = newDir;
+      });
+    }
+  }
+
+  void onGoFolder(String path) {
+    if (path.contains(ROOT_PATH)) {
+      setState(() {
+        dir = path;
       });
     }
   }
