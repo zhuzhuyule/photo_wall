@@ -78,9 +78,12 @@ class _FileBrowserState extends State<FileBrowser> {
                   return FileView(
                       file: fileEntity,
                       onPressed: (file) {
-                        setState(() {
-                          dir = file.path;
-                        });
+                        if (file.statSync().type ==
+                            FileSystemEntityType.directory) {
+                          setState(() {
+                            dir = file.path;
+                          });
+                        }
                       });
                 }).toList(),
               ),
