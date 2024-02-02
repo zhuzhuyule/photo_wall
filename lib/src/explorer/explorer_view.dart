@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:photo_wall/src/const.dart';
 import 'package:photo_wall/src/explorer/file_browser.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -22,7 +23,7 @@ class _ExplorerViewState extends State<ExplorerView> {
   void initState() {
     super.initState();
     requestPermissions();
-    dir = '/storage/emulated/0';
+    dir = ROOT_PATH;
   }
 
   Future<void> requestPermissions() async {

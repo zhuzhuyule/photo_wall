@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:photo_wall/src/const.dart';
 import 'package:photo_wall/src/explorer/file_view.dart';
 
 class FileBrowser extends StatefulWidget {
@@ -13,6 +14,8 @@ class FileBrowser extends StatefulWidget {
 
 class _FileBrowserState extends State<FileBrowser> {
   late String dir;
+
+  late bool isOpen = false;
 
   @override
   void initState() {
@@ -29,28 +32,75 @@ class _FileBrowserState extends State<FileBrowser> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(dir),
+          padding: const EdgeInsets.only(
+            left: 18,
+            right: 18,
+          ),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.folder_open),
+                onPressed: onBackFolder,
+              ),
+              Expanded(
+                child: Text(
+                    dir.replaceAll(ROOT_PATH, '/').replaceAll('//', '/'),
+                    style: const TextStyle(fontSize: 22)),
+              ),
+              IconButton(
+                icon: const Icon(Icons.reply),
+                onPressed: onBackFolder,
+              ),
+              IconButton(
+                icon: const Icon(Icons.favorite),
+                onPressed: () {
+                  onBackFolder();
+                },
+              ),
+              IconButton(
+                icon: Icon(isOpen ? Icons.view_list_outlined : Icons.view_list),
+                onPressed: () {
+                  setState(() {
+                    isOpen = !isOpen;
+                  });
+                },
+              ),
+            ],
+          ),
         ),
+        const Divider(),
         Expanded(
           child: SingleChildScrollView(
-            child: Wrap(
-              spacing: 8.0,
-              runSpacing: 8.0,
-              alignment: WrapAlignment.start, // 对齐方式
-              children: files.map((fileEntity) {
-                return FileView(
-                    file: fileEntity,
-                    onPressed: (file) {
-                      setState(() {
-                        dir = file.path;
+            child: Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                alignment: WrapAlignment.start, // 对齐方式
+                children: files.map((fileEntity) {
+                  return FileView(
+                      file: fileEntity,
+                      onPressed: (file) {
+                        setState(() {
+                          dir = file.path;
+                        });
                       });
-                    });
-              }).toList(),
+                }).toList(),
+              ),
             ),
           ),
         ),
       ],
     );
+  }
+
+  void onBackFolder() {
+    RegExp regExp = RegExp(r'/[^/]*$');
+    late String newDir = dir.replaceAll(regExp, '');
+    if (dir != ROOT_PATH) {
+      setState(() {
+        dir = newDir;
+      });
+    }
   }
 }
