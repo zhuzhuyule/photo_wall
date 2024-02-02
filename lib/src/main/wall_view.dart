@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:photo_wall/src/explorer/explorer_view.dart';
 import 'package:photo_wall/src/main/image_service.dart';
 import 'package:provider/provider.dart';
 import 'animated_image.dart';
@@ -66,15 +67,13 @@ class _WallViewState extends State<WallView> {
                     color: Colors.transparent,
                   ),
                 ),
-                ...list
-                    .map((url) => buildAnimatedContainer(url))
-                    .toList(),
+                ...list.map((url) => buildAnimatedContainer(url)).toList(),
                 Positioned(
                   bottom: 0,
                   child: FloatingActionButton(
-                    onPressed: () {
-                      addImage();
-            
+                    onPressed: () async {
+                      // addImage();
+                      Navigator.pushNamed(context, ExplorerView.routeName);
                     },
                     child: const Icon(Icons.play_arrow),
                   ),

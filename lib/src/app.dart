@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:photo_wall/src/explorer/explorer_view.dart';
 import 'package:photo_wall/src/main/wall_view.dart';
 
 import 'settings/settings_controller.dart';
@@ -46,6 +47,8 @@ class MyApp extends StatelessWidget {
               settings: routeSettings,
               builder: (BuildContext context) {
                 switch (routeSettings.name) {
+                  case ExplorerView.routeName:
+                    return const ExplorerView();
                   default:
                     return const WallView();
                 }
