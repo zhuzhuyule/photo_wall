@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:photo_wall/src/const.dart';
+import 'package:provider/provider.dart';
+
+import 'favorite_state.dart';
 
 class FavoriteList extends StatelessWidget {
-  const FavoriteList({
-    super.key,
-    required this.isOpen,
-  });
+  const FavoriteList({super.key, required this.isOpen, this.openFolder});
 
   final bool isOpen;
+  final void Function(String path)? openFolder;
 
   @override
   Widget build(BuildContext context) {
+    var setting = context.watch<FavoriteState>();
     return AnimatedContainer(
       duration: const Duration(milliseconds: 800),
       curve: Curves.fastLinearToSlowEaseIn,
@@ -23,7 +26,24 @@ class FavoriteList extends StatelessWidget {
           ),
         ),
       ),
-      child: Container(child: const Text('')),
+      child: ListView(
+        children: setting.favorites
+            .map((path) => ListTile(
+                  onTap: () {
+                    openFolder?.call(path);
+                  },
+                  leading: const Icon(
+                    Icons.folder,
+                    color: Colors.orangeAccent,
+                  ),
+                  title: Text(path.split('/').last),
+                  subtitle: Text(
+                    path.replaceAll(ROOT_PATH, ''),
+                    style: const TextStyle(color: Colors.black26),
+                  ),
+                ))
+            .toList(),
+      ),
     );
   }
 }

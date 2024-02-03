@@ -47,7 +47,7 @@ class _FileBrowserState extends State<FileBrowser> {
           child: Row(
             children: [
               Expanded(
-                child: Breadcrumb(dir: dir, onGoFolder: onGoFolder),
+                child: Breadcrumb(dir: dir, openFolder: openFolder),
               ),
               dir != ROOT_PATH
                   ? IconButton(
@@ -96,7 +96,7 @@ class _FileBrowserState extends State<FileBrowser> {
                   ),
                 ),
               ),
-              FavoriteList(isOpen: isOpen)
+              FavoriteList(isOpen: isOpen, openFolder: openFolder)
             ],
           ),
         ),
@@ -114,7 +114,7 @@ class _FileBrowserState extends State<FileBrowser> {
     }
   }
 
-  void onGoFolder(String path) {
+  void openFolder(String path) {
     if (path.contains(ROOT_PATH)) {
       setState(() {
         dir = path;

@@ -5,11 +5,11 @@ class Breadcrumb extends StatelessWidget {
   const Breadcrumb({
     super.key,
     required this.dir,
-    required this.onGoFolder,
+    required this.openFolder,
   });
 
   final String dir;
-  final void Function(String path) onGoFolder;
+  final void Function(String path) openFolder;
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +26,14 @@ class Breadcrumb extends StatelessWidget {
       IconButton(
           icon: const Icon(Icons.folder_open),
           onPressed: () {
-            onGoFolder(ROOT_PATH);
+            openFolder(ROOT_PATH);
           }),
       ...items
           .sublist(0, items.length > 1 ? items.length - 1 : 0)
           .map((path) => BreadcrumbItem(
               text: path.split('/').last,
               onPressed: () {
-                onGoFolder(path);
+                openFolder(path);
               }))
           .toList(),
 
