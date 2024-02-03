@@ -5,6 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:photo_wall/src/const.dart';
 import 'package:photo_wall/src/explorer/breadcrumb.dart';
 import 'package:photo_wall/src/explorer/file_view.dart';
+import 'package:photo_wall/src/favorite/favorite_button.dart';
+import 'package:photo_wall/src/favorite/favorite_list.dart';
+import 'package:photo_wall/src/settings/settings_controller.dart';
+import 'package:provider/provider.dart';
+
+import '../favorite/favorite_state.dart';
 
 class FileBrowser extends StatefulWidget {
   final String dir;
@@ -49,12 +55,7 @@ class _FileBrowserState extends State<FileBrowser> {
                       onPressed: onBackFolder,
                     )
                   : const Text(''),
-              IconButton(
-                icon: const Icon(Icons.favorite_border),
-                onPressed: () {
-                  onBackFolder();
-                },
-              ),
+              FavoriteButton(dir: dir),
               IconButton(
                 icon: Icon(isOpen ? Icons.view_list_outlined : Icons.view_list),
                 onPressed: () {
@@ -72,28 +73,25 @@ class _FileBrowserState extends State<FileBrowser> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Container(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Wrap(
-                        spacing: 8.0,
-                        runSpacing: 8.0,
-                        alignment: WrapAlignment.start, // 对齐方式
-                        children:
-                            filterFiles(sortFiles(files)).map((fileEntity) {
-                          return FileView(
-                              file: fileEntity,
-                              onView: (file) {
-                                _dialogBuilder(context, file);
-                              },
-                              onPressed: (file) {
-                                setState(() {
-                                  dir = file.path;
-                                });
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      alignment: WrapAlignment.start, // 对齐方式
+                      children: filterFiles(sortFiles(files)).map((fileEntity) {
+                        return FileView(
+                            file: fileEntity,
+                            onView: (file) {
+                              _dialogBuilder(context, file);
+                            },
+                            onPressed: (file) {
+                              setState(() {
+                                dir = file.path;
                               });
-                        }).toList(),
-                      ),
+                            });
+                      }).toList(),
                     ),
                   ),
                 ),
@@ -191,34 +189,6 @@ class _FileBrowserState extends State<FileBrowser> {
           ),
         );
       },
-    );
-  }
-}
-
-class FavoriteList extends StatelessWidget {
-  const FavoriteList({
-    super.key,
-    required this.isOpen,
-  });
-
-  final bool isOpen;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 800),
-      curve: Curves.fastLinearToSlowEaseIn,
-      width: isOpen ? 300 : 0,
-      height: double.infinity,
-      decoration: const BoxDecoration(
-        border: Border(
-          left: BorderSide(
-            color: Colors.black26, // 设置左边线的颜色
-            width: 1.0, // 设置左边线的宽度
-          ),
-        ),
-      ),
-      child: Container(child: const Text('')),
     );
   }
 }
