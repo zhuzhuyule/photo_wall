@@ -18,6 +18,7 @@ class FileView extends StatelessWidget {
   Widget build(BuildContext context) {
     IconData iconData;
     String fileName = '';
+    Color color = Colors.grey;
 
     // 根据文件类型设置相应的图标和文件名
     if (file is File) {
@@ -25,14 +26,24 @@ class FileView extends StatelessWidget {
       fileName = file.path.split('/').last;
     } else if (file is Directory) {
       iconData = Icons.folder;
+      color = Colors.orangeAccent;
       fileName = file.path.split('/').last;
     } else {
       iconData = Icons.insert_drive_file_outlined;
       fileName = 'Unknown';
     }
 
+    if (isImageFile(fileName)) {
+      iconData = Icons.image;
+      color = Colors.blue;
+    }
+
     return GestureDetector(
-      onTap: () => onPressed(file),
+      onTap: () {
+        if (file.statSync().type == FileSystemEntityType.directory) {
+          onPressed(file);
+        }
+      },
       child: SizedBox(
         width: 100,
         child: Column(
@@ -40,12 +51,25 @@ class FileView extends StatelessWidget {
             Icon(
               iconData,
               size: 50,
-              color: file is Directory ? Colors.orangeAccent : Colors.grey,
+              color: color,
             ),
             Text(fileName),
           ],
         ),
       ),
     );
+  }
+}
+
+bool isImageFile(String fileName) {
+  String extension = fileName.toLowerCase();
+  if (extension.endsWith('.jpg') ||
+      extension.endsWith('.jpeg') ||
+      extension.endsWith('.png') ||
+      extension.endsWith('.gif') ||
+      extension.endsWith('.bmp')) {
+    return true;
+  } else {
+    return false;
   }
 }

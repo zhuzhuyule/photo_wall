@@ -49,7 +49,7 @@ class _FileBrowserState extends State<FileBrowser> {
                     )
                   : const Text(''),
               IconButton(
-                icon: const Icon(Icons.favorite),
+                icon: const Icon(Icons.favorite_border),
                 onPressed: () {
                   onBackFolder();
                 },
@@ -67,27 +67,35 @@ class _FileBrowserState extends State<FileBrowser> {
         ),
         const Divider(),
         Expanded(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: Wrap(
-                spacing: 8.0,
-                runSpacing: 8.0,
-                alignment: WrapAlignment.start, // 对齐方式
-                children: filterFiles(sortFiles(files)).map((fileEntity) {
-                  return FileView(
-                      file: fileEntity,
-                      onPressed: (file) {
-                        if (file.statSync().type ==
-                            FileSystemEntityType.directory) {
-                          setState(() {
-                            dir = file.path;
-                          });
-                        }
-                      });
-                }).toList(),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Container(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        alignment: WrapAlignment.start, // 对齐方式
+                        children:
+                            filterFiles(sortFiles(files)).map((fileEntity) {
+                          return FileView(
+                              file: fileEntity,
+                              onPressed: (file) {
+                                setState(() {
+                                  dir = file.path;
+                                });
+                              });
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ),
+              FavoriteList(isOpen: isOpen)
+            ],
           ),
         ),
       ],
@@ -132,5 +140,33 @@ class _FileBrowserState extends State<FileBrowser> {
     return files
         .where((file) => !file.path.split('/').last.startsWith('.'))
         .toList();
+  }
+}
+
+class FavoriteList extends StatelessWidget {
+  const FavoriteList({
+    super.key,
+    required this.isOpen,
+  });
+
+  final bool isOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.fastLinearToSlowEaseIn,
+      width: isOpen ? 300 : 0,
+      height: double.infinity,
+      decoration: const BoxDecoration(
+        border: Border(
+          left: BorderSide(
+            color: Colors.black26, // 设置左边线的颜色
+            width: 1.0, // 设置左边线的宽度
+          ),
+        ),
+      ),
+      child: Container(child: const Text('')),
+    );
   }
 }
