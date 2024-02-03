@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/const.dart';
@@ -83,6 +84,9 @@ class _FileBrowserState extends State<FileBrowser> {
                             filterFiles(sortFiles(files)).map((fileEntity) {
                           return FileView(
                               file: fileEntity,
+                              onView: (file) {
+                                _dialogBuilder(context, file);
+                              },
                               onPressed: (file) {
                                 setState(() {
                                   dir = file.path;
@@ -140,6 +144,54 @@ class _FileBrowserState extends State<FileBrowser> {
     return files
         .where((file) => !file.path.split('/').last.startsWith('.'))
         .toList();
+  }
+
+  Future<void> _dialogBuilder(BuildContext context, FileSystemEntity file) {
+    const double imageSizePercentage = 0.8;
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * imageSizePercentage,
+              maxHeight:
+                  MediaQuery.of(context).size.height * imageSizePercentage,
+            ),
+            child: Image(
+              fit: BoxFit.contain,
+              image: FileImage(File(file.path)),
+              // width: MediaQuery.of(context).size.width * 1,
+              // height: MediaQuery.of(context).size.height * 1,
+              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                if (frame == 0) {
+                  return Stack(
+                    children: [
+                      child,
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          color: Colors.black.withOpacity(0.5),
+                          child: Text(
+                            file.path.split('/').last,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 

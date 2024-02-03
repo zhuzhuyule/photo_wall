@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-typedef VoidCallback = void Function(FileSystemEntity file);
-
 class FileView extends StatelessWidget {
   final FileSystemEntity file;
-  final VoidCallback onPressed;
+  final void Function(FileSystemEntity file) onPressed;
+  final void Function(FileSystemEntity file) onView;
 
   const FileView({
     super.key,
     required this.file,
     required this.onPressed,
+    required this.onView,
   });
 
   @override
@@ -33,14 +33,18 @@ class FileView extends StatelessWidget {
       fileName = 'Unknown';
     }
 
-    if (isImageFile(fileName)) {
+    final isImage = isImageFile(fileName);
+
+    if (isImage) {
       iconData = Icons.image;
       color = Colors.blue;
     }
 
     return GestureDetector(
       onTap: () {
-        if (file.statSync().type == FileSystemEntityType.directory) {
+        if (isImage) {
+          onView(file);
+        } else if (file.statSync().type == FileSystemEntityType.directory) {
           onPressed(file);
         }
       },
@@ -48,6 +52,9 @@ class FileView extends StatelessWidget {
         width: 100,
         child: Column(
           children: [
+            // isImage
+            //     ? Image.file(file as File)
+            //     :
             Icon(
               iconData,
               size: 50,

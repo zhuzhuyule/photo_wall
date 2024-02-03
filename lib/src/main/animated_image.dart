@@ -3,10 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-import 'package:photo_wall/src/main/image_service.dart';
-import 'package:provider/provider.dart';
-
-
 class AnimationImage extends StatefulWidget {
   const AnimationImage({Key? key, required this.url, this.onEnd})
       : super(key: key);
@@ -67,7 +63,6 @@ class _AnimationImageState extends State<AnimationImage>
   @override
   initState() {
     super.initState();
-                      print('-----');
     double screenWidth = window.physicalSize.width;
 
     leftController = getController(seconds: 122);
@@ -89,8 +84,8 @@ class _AnimationImageState extends State<AnimationImage>
 
   @override
   Widget build(BuildContext context) {
-          // var appState = context.watch<ImageService>();
-          // print(appState.list.length);
+    // var appState = context.watch<ImageService>();
+    // print(appState.list.length);
     return AnimatedBuilder(
         animation: rotateAnimation,
         child: Image.network(widget.url),
@@ -106,10 +101,9 @@ class _AnimationImageState extends State<AnimationImage>
                     alignment: Alignment.bottomCenter,
                     angle: rotateAnimation.value,
                     child: LayoutBuilder(builder: (context, constraints) {
-
                       getSizeOfContainer();
                       return FractionallySizedBox(
-                        heightFactor: 0.75, // 高度为屏幕高度的80%
+                        heightFactor: 0.75,
                         child: Container(
                             key: _containerKey,
                             decoration: BoxDecoration(
