@@ -6,9 +6,11 @@ const favoriteKey = 'photo_wall_favorites';
 
 class FavoriteState with ChangeNotifier {
   late SharedPreferences _preference;
+  late bool _loading = true;
   late List<String> _favorites = [];
 
   List<String> get favorites => _favorites;
+  bool get loading => _loading;
 
   FavoriteState() {
     SharedPreferences.getInstance()
@@ -18,6 +20,7 @@ class FavoriteState with ChangeNotifier {
 
   void _readPreference() {
     _favorites = _preference.getStringList(favoriteKey) ?? [];
+    _loading = false;
     notifyListeners();
   }
 

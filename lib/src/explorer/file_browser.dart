@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/const.dart';
@@ -7,10 +6,6 @@ import 'package:photo_wall/src/explorer/breadcrumb.dart';
 import 'package:photo_wall/src/explorer/file_view.dart';
 import 'package:photo_wall/src/favorite/favorite_button.dart';
 import 'package:photo_wall/src/favorite/favorite_list.dart';
-import 'package:photo_wall/src/settings/settings_controller.dart';
-import 'package:provider/provider.dart';
-
-import '../favorite/favorite_state.dart';
 
 class FileBrowser extends StatefulWidget {
   final String dir;
