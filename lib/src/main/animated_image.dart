@@ -155,7 +155,6 @@ class _AnimationImageState extends State<AnimationImage>
       }
 
       if (leftAnimation.value + width + 100 < 0) {
-        print("Element moved out of screen to the left!");
         WidgetsBinding.instance.addPostFrameCallback((_) {
           widget.onEnd?.call(widget.url);
         });

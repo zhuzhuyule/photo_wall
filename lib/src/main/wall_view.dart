@@ -58,6 +58,11 @@ class _WallViewState extends State<WallView> {
       images.addAll(newImages);
 
       if (images.isNotEmpty) {
+        if (bgSrc == '') {
+          bgSrc = getRandomSrc(images);
+          setState(() {});
+        }
+
         if (displayImages.isEmpty) {
           showNewImage();
         } else if (displayImages.any((item) => !images.contains(item))) {
@@ -144,6 +149,7 @@ class BackgroundImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.file(
+      key: ValueKey('bg $bgSrc'),
       File(bgSrc),
       fit: BoxFit.cover,
       width: double.infinity,
