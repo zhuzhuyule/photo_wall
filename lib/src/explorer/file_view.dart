@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:photo_wall/src/utils/file.dart';
 
 class FileView extends StatelessWidget {
   final FileSystemEntity file;
@@ -65,18 +66,5 @@ class FileView extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-bool isImageFile(String fileName) {
-  String extension = fileName.toLowerCase();
-  if (extension.endsWith('.jpg') ||
-      extension.endsWith('.jpeg') ||
-      extension.endsWith('.png') ||
-      extension.endsWith('.gif') ||
-      extension.endsWith('.bmp')) {
-    return true;
-  } else {
-    return false;
   }
 }

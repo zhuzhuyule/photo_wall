@@ -1,13 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:photo_wall/src/utils/file.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-const favoriteKey = 'photo_wall_favorites';
+const favoritePathKey = 'photo_wall_favorites';
 
 class FavoriteState with ChangeNotifier {
   late SharedPreferences _preference;
   late bool _loading = true;
-  late List<String> _favorites = [];
+  late List<String> _favoriteDirs = [];
+  late final List<String> _favorites = [];
 
   List<String> get favorites => _favorites;
   bool get loading => _loading;
@@ -18,34 +22,44 @@ class FavoriteState with ChangeNotifier {
         .then((value) => {_readPreference()});
   }
 
-  void _readPreference() {
-    _favorites = _preference.getStringList(favoriteKey) ?? [];
-    _loading = false;
+  getFavoriteFiles() {
+    for (var dir in _favoriteDirs) {
+      final List<FileSystemEntity> files = Directory(dir).listSync().toList();
+      for (var file in files) {
+        if (isImageFile(file.path)) {
+          favorites.add(file.path);
+        }
+      }
+    }
     notifyListeners();
   }
 
+  void _readPreference() {
+    _favoriteDirs = _preference.getStringList(favoritePathKey) ?? [];
+    _loading = false;
+    getFavoriteFiles();
+  }
+
   void addFavorite(String favorite) {
-    if (!_favorites.contains(favorite)) {
-      _favorites.add(favorite);
-      _preference.setStringList(favoriteKey, _favorites);
-      notifyListeners();
+    if (!_favoriteDirs.contains(favorite)) {
+      _favoriteDirs.add(favorite);
+      _preference.setStringList(favoritePathKey, _favoriteDirs);
+      getFavoriteFiles();
     }
   }
 
   void removeFavorite(String favorite) {
-    if (_favorites.contains(favorite)) {
-      _favorites.remove(favorite);
-      _preference.setStringList(favoriteKey, _favorites);
-      notifyListeners();
+    if (_favoriteDirs.contains(favorite)) {
+      _preference.setStringList(favoritePathKey, _favoriteDirs);
+      getFavoriteFiles();
     }
   }
 
   void toggleFavorite(String favorite) {
-    if (_favorites.contains(favorite)) {
+    if (_favoriteDirs.contains(favorite)) {
       removeFavorite(favorite);
     } else {
       addFavorite(favorite);
     }
-    notifyListeners();
   }
 }
