@@ -14,6 +14,7 @@ class FavoriteState with ChangeNotifier {
   late final List<String> _favorites = [];
 
   List<String> get favorites => _favorites;
+  List<String> get favoriteDirs => _favoriteDirs;
   bool get loading => _loading;
 
   FavoriteState() {
@@ -40,26 +41,27 @@ class FavoriteState with ChangeNotifier {
     getFavoriteFiles();
   }
 
-  void addFavorite(String favorite) {
-    if (!_favoriteDirs.contains(favorite)) {
-      _favoriteDirs.add(favorite);
+  void addDir(String dir) {
+    if (!_favoriteDirs.contains(dir)) {
+      _favoriteDirs.add(dir);
       _preference.setStringList(favoritePathKey, _favoriteDirs);
       getFavoriteFiles();
     }
   }
 
-  void removeFavorite(String favorite) {
-    if (_favoriteDirs.contains(favorite)) {
+  void removeDir(String dir) {
+    if (_favoriteDirs.contains(dir)) {
+      _favoriteDirs.remove(dir);
       _preference.setStringList(favoritePathKey, _favoriteDirs);
       getFavoriteFiles();
     }
   }
 
-  void toggleFavorite(String favorite) {
-    if (_favoriteDirs.contains(favorite)) {
-      removeFavorite(favorite);
+  void toggleFavoriteDir(String dir) {
+    if (_favoriteDirs.contains(dir)) {
+      removeDir(dir);
     } else {
-      addFavorite(favorite);
+      addDir(dir);
     }
   }
 }

@@ -12,9 +12,9 @@ class FavoriteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var setting = context.watch<FavoriteState>();
+    var favoriteSate = context.watch<FavoriteState>();
 
-    final icon = setting.favorites.contains(dir)
+    final icon = favoriteSate.favoriteDirs.contains(dir)
         ? const Icon(
             Icons.favorite,
             color: Colors.red,
@@ -23,7 +23,7 @@ class FavoriteButton extends StatelessWidget {
     return IconButton(
       icon: icon,
       onPressed: () {
-        setting.toggleFavorite(dir);
+        favoriteSate.toggleFavoriteDir(dir);
       },
     );
   }

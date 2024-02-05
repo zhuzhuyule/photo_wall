@@ -12,7 +12,7 @@ class FavoriteList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var setting = context.watch<FavoriteState>();
+    var favoriteState = context.watch<FavoriteState>();
     return AnimatedContainer(
       duration: const Duration(milliseconds: 800),
       curve: Curves.fastLinearToSlowEaseIn,
@@ -27,7 +27,7 @@ class FavoriteList extends StatelessWidget {
         ),
       ),
       child: ListView(
-        children: setting.favorites
+        children: favoriteState.favoriteDirs
             .map((path) => ListTile(
                   onTap: () {
                     openFolder?.call(path);
