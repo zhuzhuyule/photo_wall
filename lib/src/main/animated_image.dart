@@ -1,14 +1,19 @@
-import 'dart:ui';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'dart:math';
+
+import 'package:photo_wall/src/utils/file.dart';
+
+import 'image_loader.dart';
 
 class AnimationImage extends StatefulWidget {
-  const AnimationImage({Key? key, required this.url, this.onEnd})
+  const AnimationImage(
+      {Key? key, required this.url, this.onEnd, this.onShowAll})
       : super(key: key);
 
   final String url;
-  final Function? onEnd;
+  final Function(String url)? onEnd;
+  final Function? onShowAll;
 
   @override
   _AnimationImageState createState() => _AnimationImageState();
@@ -27,6 +32,8 @@ class _AnimationImageState extends State<AnimationImage>
 
   final GlobalKey _containerKey = GlobalKey();
 
+  late bool isShowAll = false;
+
   getController({int seconds = 0, int milliseconds = 0}) {
     return AnimationController(
         duration: Duration(seconds: seconds, milliseconds: milliseconds),
@@ -41,20 +48,10 @@ class _AnimationImageState extends State<AnimationImage>
       final Animation<double> curve =
           CurvedAnimation(parent: controller, curve: Curves.linear);
       animate = tween.animate(curve);
-      animate = animate
-        ..addStatusListener((status) {
-          if (status == AnimationStatus.completed) {
-            controller.reverse();
-          } else if (status == AnimationStatus.dismissed) {
-            controller.forward();
-          }
-        });
-      controller.forward(from: tween.lerp(Random().nextDouble()));
     } else {
       final Animation<double> curve =
           CurvedAnimation(parent: controller, curve: Curves.linear);
       animate = tween.animate(curve);
-      controller.forward();
     }
 
     return animate;
@@ -63,17 +60,9 @@ class _AnimationImageState extends State<AnimationImage>
   @override
   initState() {
     super.initState();
-    double screenWidth = window.physicalSize.width;
-
     leftController = getController(seconds: 122);
     leftAnimation =
         getAnimation(screenWidth, -screenWidth, leftController, false);
-
-    // leftAnimation.addStatusListener((status) {
-    //   if (status == AnimationStatus.completed) {
-    //     widget.onEnd?.call();
-    //   }
-    // });
 
     scaleController = getController(seconds: 16);
     scaleAnimation = getAnimation(1.0, 1.2, scaleController);
@@ -84,15 +73,32 @@ class _AnimationImageState extends State<AnimationImage>
 
   @override
   Widget build(BuildContext context) {
-    // var appState = context.watch<ImageService>();
-    // print(appState.list.length);
     return AnimatedBuilder(
         animation: rotateAnimation,
-        child: Image.network(widget.url),
+        child: widget.url.startsWith('http')
+            ? Image.network(widget.url)
+            : Image.file(File(widget.url)),
         builder: (context, child) {
           return AnimatedBuilder(
               animation: scaleAnimation,
-              child: child,
+              child: ImageLoader(
+                key: ValueKey(widget.url),
+                filePath: widget.url,
+                onLoaded: (path) {
+                  leftController.forward();
+                  scaleController.repeat(reverse: true);
+                  rotateController.repeat(reverse: true);
+                },
+                onError: (filePath) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    setState(() {
+                      isShowAll = true;
+                    });
+                    widget.onShowAll!.call();
+                    widget.onEnd?.call(filePath);
+                  });
+                },
+              ),
               builder: (context, child) {
                 return Transform.scale(
                   alignment: Alignment.center,
@@ -139,10 +145,19 @@ class _AnimationImageState extends State<AnimationImage>
       Size size = renderBox.size;
       double width = size.width;
 
+      if (!isShowAll && leftAnimation.value + width + 200 < screenWidth) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          setState(() {
+            isShowAll = true;
+          });
+          widget.onShowAll!.call();
+        });
+      }
+
       if (leftAnimation.value + width + 100 < 0) {
         print("Element moved out of screen to the left!");
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          widget.onEnd?.call();
+          widget.onEnd?.call(widget.url);
         });
       }
     }
