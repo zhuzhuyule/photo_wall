@@ -28,6 +28,10 @@ class _WallViewState extends State<WallView> {
     String randomSrc = getRandomSrc(images);
     displayImages.add(randomSrc);
     images.remove(randomSrc);
+    if (images.isEmpty && widget.images.isNotEmpty) {
+      images.addAll(widget.images);
+      historyImages.clear();
+    }
     setState(() {});
   }
 
@@ -68,6 +72,10 @@ class _WallViewState extends State<WallView> {
         } else if (displayImages.any((item) => !images.contains(item))) {
           displayImages.retainWhere((item) => images.contains(item));
           images.retainWhere((item) => displayImages.contains(item));
+          if (images.isEmpty && widget.images.isNotEmpty) {
+            images.addAll(widget.images);
+            historyImages.clear();
+          }
           setState(() {});
         }
       }
