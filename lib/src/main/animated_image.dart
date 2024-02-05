@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -45,6 +46,7 @@ class _AnimationImageState extends State<AnimationImage>
     final tween = Tween(begin: begin, end: end);
     late Animation animate;
     if (repeat) {
+      controller.value = Random().nextDouble();
       final Animation<double> curve =
           CurvedAnimation(parent: controller, curve: Curves.linear);
       animate = tween.animate(curve);
@@ -61,8 +63,8 @@ class _AnimationImageState extends State<AnimationImage>
   initState() {
     super.initState();
     leftController = getController(seconds: 122);
-    leftAnimation =
-        getAnimation(screenWidth, -screenWidth, leftController, false);
+    leftAnimation = getAnimation(
+        screenWidth + 100, -screenWidth * 2, leftController, false);
 
     scaleController = getController(seconds: 16);
     scaleAnimation = getAnimation(1.0, 1.2, scaleController);
@@ -75,61 +77,59 @@ class _AnimationImageState extends State<AnimationImage>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
         animation: rotateAnimation,
-        child: widget.url.startsWith('http')
-            ? Image.network(widget.url)
-            : Image.file(File(widget.url)),
+        child: ImageLoader(
+          key: ValueKey(widget.url),
+          filePath: widget.url,
+          onLoaded: (path) {
+            leftController.forward();
+            scaleController.repeat(reverse: true);
+            rotateController.repeat(reverse: true);
+          },
+          onError: (filePath) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              setState(() {
+                isShowAll = true;
+              });
+              widget.onShowAll!.call();
+              widget.onEnd?.call(filePath);
+            });
+          },
+        ),
         builder: (context, child) {
           return AnimatedBuilder(
               animation: scaleAnimation,
-              child: ImageLoader(
-                key: ValueKey(widget.url),
-                filePath: widget.url,
-                onLoaded: (path) {
-                  leftController.forward();
-                  scaleController.repeat(reverse: true);
-                  rotateController.repeat(reverse: true);
-                },
-                onError: (filePath) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    setState(() {
-                      isShowAll = true;
-                    });
-                    widget.onShowAll!.call();
-                    widget.onEnd?.call(filePath);
-                  });
-                },
-              ),
+              child: child,
               builder: (context, child) {
-                return Transform.scale(
-                  alignment: Alignment.center,
-                  scale: scaleAnimation.value,
-                  child: Transform.rotate(
-                    alignment: Alignment.bottomCenter,
-                    angle: rotateAnimation.value,
-                    child: LayoutBuilder(builder: (context, constraints) {
-                      getSizeOfContainer();
-                      return FractionallySizedBox(
-                        heightFactor: 0.75,
-                        child: Container(
-                            key: _containerKey,
-                            decoration: BoxDecoration(
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black54,
-                                  blurRadius: 10.0,
-                                  offset: Offset(0, 10.0),
-                                )
-                              ],
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 5, // 边框宽度
+                return Transform.translate(
+                  offset: Offset(leftAnimation.value, 0),
+                  child: Transform.scale(
+                    alignment: Alignment.center,
+                    scale: scaleAnimation.value,
+                    child: Transform.rotate(
+                      angle: rotateAnimation.value,
+                      child: LayoutBuilder(builder: (context, constraints) {
+                        getSizeOfContainer();
+                        return FractionallySizedBox(
+                          heightFactor: 0.75,
+                          child: Container(
+                              key: _containerKey,
+                              decoration: BoxDecoration(
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black54,
+                                    blurRadius: 10.0,
+                                    offset: Offset(0, 10.0),
+                                  )
+                                ],
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 6, // 边框宽度
+                                ),
                               ),
-                            ),
-                            transform: Matrix4.identity()
-                              ..translate(leftAnimation.value, 0, 0),
-                            child: child),
-                      );
-                    }),
+                              child: child),
+                        );
+                      }),
+                    ),
                   ),
                 );
               });
@@ -145,7 +145,7 @@ class _AnimationImageState extends State<AnimationImage>
       Size size = renderBox.size;
       double width = size.width;
 
-      if (!isShowAll && leftAnimation.value + width + 200 < screenWidth) {
+      if (!isShowAll && leftAnimation.value + width + 100 < screenWidth) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           setState(() {
             isShowAll = true;
