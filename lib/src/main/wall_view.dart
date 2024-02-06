@@ -8,6 +8,7 @@ import 'package:photo_wall/src/explorer/explorer_view.dart';
 import '../const.dart';
 import 'animated_image.dart';
 import 'package:flutter/foundation.dart';
+import 'package:photo_view/photo_view.dart';
 
 class WallView extends StatefulWidget {
   const WallView({super.key, this.images = const []});
@@ -66,10 +67,7 @@ class _WallViewState extends State<WallView> {
                 previewImage = '';
               });
             },
-            child: Hero(
-                tag: '${heroKey['preview']}',
-                child: Image.file(File(previewImage))),
-          );
+            child: PhotoView(imageProvider: FileImage(File(previewImage))));
   }
 
   List<Widget> renderPhotos() {

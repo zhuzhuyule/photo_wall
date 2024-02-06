@@ -43,12 +43,10 @@ class _AnimationImageState extends State<AnimationImage>
 
   late bool isShowAll = false;
   late bool isLoaded = false;
-  late Size? size;
 
   @override
   initState() {
     super.initState();
-    size = null;
 
     leftController = getController(seconds: 122);
     leftAnimation = getAnimation(
@@ -105,7 +103,6 @@ class _AnimationImageState extends State<AnimationImage>
                     child: Transform.rotate(
                       angle: rotateAnimation.value,
                       child: LayoutBuilder(builder: (context, constraints) {
-                        final hiddenImage = widget.previewImage == widget.url;
                         getSizeOfContainer();
                         return FractionallySizedBox(
                           heightFactor: 0.75,
@@ -116,7 +113,6 @@ class _AnimationImageState extends State<AnimationImage>
                               }
                             },
                             child: Container(
-                                width: size?.width,
                                 key: _containerKey,
                                 decoration: BoxDecoration(
                                   boxShadow: const [
@@ -131,11 +127,7 @@ class _AnimationImageState extends State<AnimationImage>
                                     width: 6, // 边框宽度
                                   ),
                                 ),
-                                child: hiddenImage
-                                    ? const Empty()
-                                    : Hero(
-                                        tag: '${heroKey['preview']}',
-                                        child: child!)),
+                                child: child),
                           ),
                         );
                       }),
@@ -181,10 +173,6 @@ class _AnimationImageState extends State<AnimationImage>
     if (_containerKey.currentContext != null) {
       RenderBox renderBox =
           _containerKey.currentContext?.findRenderObject() as RenderBox;
-
-      if (widget.previewImage == widget.url) {
-        size = renderBox.size;
-      }
 
       double width = renderBox.size.width;
 
