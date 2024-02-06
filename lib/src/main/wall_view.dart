@@ -1,11 +1,11 @@
 import 'dart:io';
-import 'dart:ui';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/common/empty.dart';
 import 'package:photo_wall/src/explorer/explorer_view.dart';
-import '../const.dart';
+import 'package:photo_wall/src/main/background_blur.dart';
+import 'package:photo_wall/src/main/background_image.dart';
 import 'animated_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:photo_view/photo_view.dart';
@@ -148,42 +148,6 @@ class FloatButton extends StatelessWidget {
         },
         child: const Icon(Icons.play_arrow),
       ),
-    );
-  }
-}
-
-class BackgroundBlur extends StatelessWidget {
-  const BackgroundBlur({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-      child: Container(
-        color: Colors.transparent,
-      ),
-    );
-  }
-}
-
-class BackgroundImage extends StatelessWidget {
-  const BackgroundImage({
-    super.key,
-    required this.bgSrc,
-  });
-
-  final String bgSrc;
-
-  @override
-  Widget build(BuildContext context) {
-    return Image.file(
-      key: ValueKey('bg $bgSrc'),
-      File(bgSrc),
-      fit: BoxFit.cover,
-      width: double.infinity,
-      height: double.infinity,
     );
   }
 }
