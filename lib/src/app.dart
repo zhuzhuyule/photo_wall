@@ -42,7 +42,7 @@ class App extends StatelessWidget {
                     default:
                       return favoriteState.favorites.isNotEmpty
                           ? WallView(images: favoriteState.favorites)
-                          : const Empty();
+                          : const ExplorerView();
                   }
                 },
               );
