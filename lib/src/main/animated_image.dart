@@ -1,11 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:photo_wall/src/common/empty.dart';
-import 'package:photo_wall/src/const.dart';
-
 import 'package:photo_wall/src/utils/file.dart';
-
 import 'image_loader.dart';
 
 class AnimationImage extends StatefulWidget {
@@ -75,7 +71,7 @@ class _AnimationImageState extends State<AnimationImage>
         animation: rotateAnimation,
         child: ImageLoader(
           key: ValueKey(widget.url),
-          filePath: widget.url,
+          src: widget.url,
           onLoaded: (path) {
             setState(() {
               isLoaded = true;

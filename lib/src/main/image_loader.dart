@@ -1,15 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:photo_wall/src/const.dart';
 
 class ImageLoader extends StatefulWidget {
   const ImageLoader({
     super.key,
     required this.onLoaded,
     required this.onError,
-    this.filePath = '',
+    this.src = '',
   });
 
-  final String filePath;
+  final String src;
   final void Function(String filePath) onLoaded;
   final void Function(String filePath) onError;
 
@@ -19,12 +20,14 @@ class ImageLoader extends StatefulWidget {
 
 class _ImageLoaderState extends State<ImageLoader> {
   late bool loaded = false;
+
   @override
   Widget build(BuildContext context) {
-    final src = widget.filePath;
+    final String src = widget.src;
+
     return Image(
         key: ValueKey(src),
-        image: FileImage(File(src)),
+        image: getImageProvider(src),
         errorBuilder: (context, error, stackTrace) {
           widget.onError.call(src);
           return const Text('Error loading image');

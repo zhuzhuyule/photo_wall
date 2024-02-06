@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/const.dart';
 import 'package:photo_wall/src/explorer/breadcrumb.dart';
-import 'package:photo_wall/src/explorer/file_view.dart';
 import 'package:photo_wall/src/favorite/favorite_button.dart';
 import 'package:photo_wall/src/favorite/favorite_list.dart';
+
+import 'file_view.dart';
 
 class FileBrowser extends StatefulWidget {
   final String dir;
@@ -155,8 +156,6 @@ class _FileBrowserState extends State<FileBrowser> {
             child: Image(
               fit: BoxFit.contain,
               image: FileImage(File(file.path)),
-              // width: MediaQuery.of(context).size.width * 1,
-              // height: MediaQuery.of(context).size.height * 1,
               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                 if (frame == 0) {
                   return Stack(

@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/const.dart';
-import 'package:photo_wall/src/explorer/file_browser.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'local/file_browser.dart';
 
 class ExplorerView extends StatefulWidget {
   const ExplorerView({super.key});
@@ -45,24 +46,5 @@ class _ExplorerViewState extends State<ExplorerView> {
         dir: dir,
       ),
     );
-  }
-
-  Future<void> _loadImages() async {
-    try {
-      // 获取设备上的图片目录
-      // Directory? appDir = await getExternalStorageDirectory();
-      Directory imageDir = Directory('/storage/emulated/0');
-
-      // // 获取目录下的图片文件列表
-      List<FileSystemEntity> files = imageDir.listSync();
-      // List<File> images = files.whereType<File>().toList();
-
-      print(files.map((item) => item.path + item.uri.path));
-      // setState(() {
-      //   _imageFiles = images;
-      // });
-    } catch (e) {
-      print('Error loading images: $e');
-    }
   }
 }

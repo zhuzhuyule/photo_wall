@@ -53,9 +53,6 @@ class FileView extends StatelessWidget {
         width: 100,
         child: Column(
           children: [
-            // isImage
-            //     ? Image.file(file as File)
-            //     :
             Icon(
               iconData,
               size: 50,

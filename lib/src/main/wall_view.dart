@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/common/empty.dart';
+import 'package:photo_wall/src/const.dart';
 import 'package:photo_wall/src/explorer/explorer_view.dart';
 import 'package:photo_wall/src/main/background_blur.dart';
 import 'package:photo_wall/src/main/background_image.dart';
@@ -67,7 +68,7 @@ class _WallViewState extends State<WallView> {
                 previewImage = '';
               });
             },
-            child: PhotoView(imageProvider: FileImage(File(previewImage))));
+            child: PhotoView(imageProvider: getImageProvider(previewImage)));
   }
 
   List<Widget> renderPhotos() {
