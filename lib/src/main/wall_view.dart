@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/common/empty.dart';
 import 'package:photo_wall/src/explorer/explorer_view.dart';
+import '../const.dart';
 import 'animated_image.dart';
 import 'package:flutter/foundation.dart';
 
@@ -23,6 +24,69 @@ class _WallViewState extends State<WallView> {
   final List<String> images = [];
   final List<String> historyImages = [];
   final List<String> displayImages = [];
+  late String previewImage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    initStatus();
+  }
+
+  @override
+  void didUpdateWidget(covariant WallView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    initStatus();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // final imageService = Provider.of<ImageService>(context);
+    return SizedBox(
+      width: double.infinity,
+      height: double.infinity,
+      child: Stack(
+        alignment: AlignmentDirectional.centerStart,
+        children: [
+          bgSrc == '' ? const Empty() : BackgroundImage(bgSrc: bgSrc),
+          const BackgroundBlur(),
+          ...renderPhotos(),
+          renderPreview(),
+          const FloatButton()
+        ],
+      ),
+    );
+  }
+
+  Widget renderPreview() {
+    return previewImage == ''
+        ? const Empty()
+        : GestureDetector(
+            onTap: () {
+              setState(() {
+                previewImage = '';
+              });
+            },
+            child: Hero(
+                tag: '${heroKey['preview']}',
+                child: Image.file(File(previewImage))),
+          );
+  }
+
+  List<Widget> renderPhotos() {
+    return displayImages
+        .map((url) => AnimationImage(
+            key: ValueKey(url),
+            url: url,
+            previewImage: previewImage,
+            onPreview: (String url) {
+              setState(() {
+                previewImage = url;
+              });
+            },
+            onShowAll: showNewImage,
+            onEnd: removeImage))
+        .toList();
+  }
 
   void showNewImage() {
     String randomSrc = getRandomSrc(images);
@@ -40,18 +104,6 @@ class _WallViewState extends State<WallView> {
     historyImages.add(url);
     bgSrc = url;
     setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initStatus();
-  }
-
-  @override
-  void didUpdateWidget(covariant WallView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    initStatus();
   }
 
   void initStatus() {
@@ -80,34 +132,6 @@ class _WallViewState extends State<WallView> {
         }
       }
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // final imageService = Provider.of<ImageService>(context);
-    return SizedBox(
-      width: double.infinity,
-      height: double.infinity,
-      child: Stack(
-        alignment: AlignmentDirectional.centerStart,
-        children: [
-          bgSrc == '' ? const Empty() : BackgroundImage(bgSrc: bgSrc),
-          const BackgroundBlur(),
-          ...renderPhotos(),
-          const FloatButton()
-        ],
-      ),
-    );
-  }
-
-  List<Widget> renderPhotos() {
-    return displayImages
-        .map((url) => AnimationImage(
-            key: ValueKey(url),
-            url: url,
-            onShowAll: showNewImage,
-            onEnd: removeImage))
-        .toList();
   }
 }
 
