@@ -24,12 +24,12 @@ class _FileBrowserState extends State<FileBrowser> {
   @override
   void initState() {
     super.initState();
-    dir = widget.dir;
+    dir = widget.dir.replaceAll(ROOT_PATH, '');
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<FileSystemEntity> files = Directory(dir)
+    final List<FileSystemEntity> files = Directory('$ROOT_PATH$dir')
         .listSync(); //.sort((file1, file2) => file1.path.compareTo(file2.path));
 
     return Column(
@@ -51,7 +51,7 @@ class _FileBrowserState extends State<FileBrowser> {
                       onPressed: onBackFolder,
                     )
                   : const Text(''),
-              FavoriteButton(dir: dir),
+              FavoriteButton(dir: '$ROOT_PATH$dir'),
               IconButton(
                 icon: Icon(isOpen ? Icons.view_list_outlined : Icons.view_list),
                 onPressed: () {
@@ -84,7 +84,7 @@ class _FileBrowserState extends State<FileBrowser> {
                             },
                             onPressed: (file) {
                               setState(() {
-                                dir = file.path;
+                                dir = file.path.replaceAll(ROOT_PATH, '');
                               });
                             });
                       }).toList(),
@@ -103,7 +103,7 @@ class _FileBrowserState extends State<FileBrowser> {
   void onBackFolder() {
     RegExp regExp = RegExp(r'/[^/]*$');
     late String newDir = dir.replaceAll(regExp, '');
-    if (newDir.contains(ROOT_PATH)) {
+    if (newDir.startsWith('/')) {
       setState(() {
         dir = newDir;
       });

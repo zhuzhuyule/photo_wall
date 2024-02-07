@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/const.dart';
+import 'package:photo_wall/src/utils/image_api_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'favorite_state.dart';
@@ -38,7 +39,9 @@ class FavoriteList extends StatelessWidget {
                   ),
                   title: Text(path.split('/').last),
                   subtitle: Text(
-                    path.replaceAll(ROOT_PATH, ''),
+                    path
+                        .replaceAll(ROOT_PATH, '')
+                        .replaceAll(ImageApiHelper.baseUrl, ''),
                     style: const TextStyle(color: Colors.black26),
                   ),
                 ))

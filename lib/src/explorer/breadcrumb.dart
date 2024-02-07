@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:photo_wall/src/const.dart';
 
 class Breadcrumb extends StatelessWidget {
   const Breadcrumb({
@@ -14,11 +13,12 @@ class Breadcrumb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<String> items = [];
-    late String str = ROOT_PATH;
-    for (var name in dir.replaceAll(ROOT_PATH, '/').split('/')) {
-      if (name.isNotEmpty) {
-        str = '$str/$name';
-        items.add(str);
+    late String path = '/';
+    for (var name in dir.split('/')) {
+      final str = name.trim();
+      if (str.isNotEmpty) {
+        path += '/$name';
+        items.add(path);
       }
     }
 
@@ -26,7 +26,7 @@ class Breadcrumb extends StatelessWidget {
       IconButton(
           icon: const Icon(Icons.folder_open),
           onPressed: () {
-            openFolder(ROOT_PATH);
+            openFolder('/');
           }),
       ...items
           .sublist(0, items.length > 1 ? items.length - 1 : 0)

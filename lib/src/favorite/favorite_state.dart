@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/utils/file.dart';
+import 'package:photo_wall/src/utils/image_api_helper.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,12 +24,24 @@ class FavoriteState with ChangeNotifier {
         .then((value) => {_readPreference()});
   }
 
-  getFavoriteFiles() {
+  getFavoriteFiles() async {
     for (var dir in _favoriteDirs) {
-      final List<FileSystemEntity> files = Directory(dir).listSync().toList();
-      for (var file in files) {
-        if (isImageFile(file.path)) {
-          favorites.add(file.path);
+      if (dir.startsWith('http')) {
+        final baseDir = dir.replaceAll(ImageApiHelper.baseUrl, '');
+        final List<TFileInfo> files = await ImageApiHelper()
+            .getDirFiles(baseDir)
+            .then((data) => data.result);
+        for (var file in files) {
+          if (isImageFile(file.name)) {
+            favorites.add(ImageApiHelper().getFileLink(baseDir, file));
+          }
+        }
+      } else {
+        final List<FileSystemEntity> files = Directory(dir).listSync().toList();
+        for (var file in files) {
+          if (isImageFile(file.path)) {
+            favorites.add(file.path);
+          }
         }
       }
     }

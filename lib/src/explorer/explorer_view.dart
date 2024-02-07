@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/const.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_wall/src/explorer/network/network_browser.dart';
 
 import 'local/file_browser.dart';
 
@@ -42,9 +43,12 @@ class _ExplorerViewState extends State<ExplorerView> {
       appBar: AppBar(
         title: const Text('Explorer'),
       ),
-      body: FileBrowser(
-        dir: dir,
+      body: const NetworkBrowser(
+        dir: '',
       ),
+      // body: FileBrowser(
+      //   dir: dir,
+      // ),
     );
   }
 }

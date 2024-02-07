@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:photo_wall/src/const.dart';
 
 class BackgroundImage extends StatelessWidget {
   const BackgroundImage({
@@ -11,9 +12,9 @@ class BackgroundImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.file(
+    return Image(
       key: ValueKey('bg $bgSrc'),
-      File(bgSrc),
+      image: getImageProvider(bgSrc),
       fit: BoxFit.cover,
       width: double.infinity,
       height: double.infinity,
