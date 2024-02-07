@@ -4,7 +4,6 @@ import 'package:photo_wall/src/favorite/favorite_button.dart';
 import 'package:photo_wall/src/favorite/favorite_list.dart';
 import 'package:photo_wall/src/utils/image_api_helper.dart';
 
-import 'network_file.dart';
 import 'network_window.dart';
 
 class NetworkBrowser extends StatefulWidget {
@@ -32,9 +31,8 @@ class _NetworkBrowserState extends State<NetworkBrowser> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(
-            left: 18,
-            right: 18,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 18,
           ),
           child: Row(
             children: [
@@ -51,9 +49,8 @@ class _NetworkBrowserState extends State<NetworkBrowser> {
               IconButton(
                 icon: Icon(isOpen ? Icons.view_list_outlined : Icons.view_list),
                 onPressed: () {
-                  setState(() {
-                    isOpen = !isOpen;
-                  });
+                  isOpen = !isOpen;
+                  setState(() {});
                 },
               ),
             ],

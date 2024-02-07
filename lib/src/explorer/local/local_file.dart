@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/utils/file.dart';
 
-class FileView extends StatelessWidget {
+class LocalFile extends StatelessWidget {
   final FileSystemEntity file;
   final void Function(FileSystemEntity file) onPressed;
   final void Function(FileSystemEntity file) onView;
 
-  const FileView({
+  const LocalFile({
     super.key,
     required this.file,
     required this.onPressed,

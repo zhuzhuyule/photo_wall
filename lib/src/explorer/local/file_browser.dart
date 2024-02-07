@@ -6,7 +6,7 @@ import 'package:photo_wall/src/explorer/breadcrumb.dart';
 import 'package:photo_wall/src/favorite/favorite_button.dart';
 import 'package:photo_wall/src/favorite/favorite_list.dart';
 
-import 'file_view.dart';
+import 'local_file.dart';
 
 class FileBrowser extends StatefulWidget {
   final String dir;
@@ -77,7 +77,7 @@ class _FileBrowserState extends State<FileBrowser> {
                       runSpacing: 8.0,
                       alignment: WrapAlignment.start, // 对齐方式
                       children: filterFiles(sortFiles(files)).map((fileEntity) {
-                        return FileView(
+                        return LocalFile(
                             file: fileEntity,
                             onView: (file) {
                               _dialogBuilder(context, file);

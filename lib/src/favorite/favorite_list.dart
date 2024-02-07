@@ -29,19 +29,18 @@ class FavoriteList extends StatelessWidget {
       ),
       child: isOpen
           ? ListView(
-              children: favoriteState.favoriteDirs.map((path) {
-                print(path);
+              children: favoriteState.favoriteDirs.map((fullPath) {
                 return ListTile(
                   onTap: () {
-                    openFolder?.call(path);
+                    openFolder?.call(fullPath);
                   },
                   leading: const Icon(
                     Icons.folder,
                     color: Colors.orangeAccent,
                   ),
-                  title: Text(path.split('/').last),
+                  title: Text(fullPath.split('/').last),
                   subtitle: Text(
-                    path
+                    fullPath
                         .replaceAll(ROOT_PATH, '')
                         .replaceAll(ImageApiHelper.baseUrl, ''),
                     style: const TextStyle(color: Colors.black26),
