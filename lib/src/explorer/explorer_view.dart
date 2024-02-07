@@ -41,7 +41,7 @@ class _ExplorerViewState extends State<ExplorerView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Explorer'),
+        title: const Text('选择图片目录'),
       ),
       body: const NetworkBrowser(
         dir: '',

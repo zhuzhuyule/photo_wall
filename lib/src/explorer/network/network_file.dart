@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:photo_wall/src/utils/file.dart';
 import 'package:photo_wall/src/utils/image_api_helper.dart';
 
-class NetworkView extends StatelessWidget {
+class NetworkFile extends StatelessWidget {
   final TFileInfo file;
   final void Function(TFileInfo file) onPressed;
   final void Function(TFileInfo file) onView;
 
-  const NetworkView({
+  const NetworkFile({
     super.key,
     required this.file,
     required this.onPressed,

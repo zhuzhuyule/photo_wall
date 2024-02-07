@@ -27,9 +27,11 @@ class FavoriteList extends StatelessWidget {
           ),
         ),
       ),
-      child: ListView(
-        children: favoriteState.favoriteDirs
-            .map((path) => ListTile(
+      child: isOpen
+          ? ListView(
+              children: favoriteState.favoriteDirs.map((path) {
+                print(path);
+                return ListTile(
                   onTap: () {
                     openFolder?.call(path);
                   },
@@ -44,9 +46,10 @@ class FavoriteList extends StatelessWidget {
                         .replaceAll(ImageApiHelper.baseUrl, ''),
                     style: const TextStyle(color: Colors.black26),
                   ),
-                ))
-            .toList(),
-      ),
+                );
+              }).toList(),
+            )
+          : const Text(''),
     );
   }
 }
