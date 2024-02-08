@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:exif/exif.dart';
 import 'package:http/http.dart' as http;
 import 'package:photo_wall/src/const.dart';
 
@@ -92,5 +93,87 @@ class TFileInfo {
       thumb: json['thumb'],
       type: json['type'],
     );
+  }
+}
+
+Future<Map<String, dynamic>?> getImageInfo(String url) async {
+  final response = await http.get(Uri.parse(url));
+
+  var imageBytes = response.bodyBytes;
+  var data = await readExifFromBytes(imageBytes);
+  if (data.isEmpty) {
+    print("No EXIF information found");
+    return null;
+  }
+
+  double convertToDecimal(List<num> list) {
+    return list[0] + list[1] / 60 + list[2] / 3600;
+  }
+
+  double parseNumberList(IfdTag? value) {
+    if (value == null) {
+      return 0.0;
+    }
+    var matchResult = RegExp(r'\[(\w*), (\w*), (\w.*)/(\w.*)\]')
+        .firstMatch(value.toString())!;
+    return convertToDecimal([
+      int.parse(matchResult.group(1)!),
+      int.parse(matchResult.group(2)!),
+      int.parse(matchResult.group(3)!) / int.parse(matchResult.group(4)!)
+    ]);
+  }
+
+  final latitude = parseNumberList(data['GPS GPSLatitude']);
+  final longitude = parseNumberList(data['GPS GPSLongitude']);
+  final locationInfo = await getLocationInfo(longitude, latitude);
+
+  return {
+    'time': data['EXIF DateTimeOriginal'].toString(),
+    'phone':
+        '${data['Image Make']} ${data['Image Model']}'.replaceAll('[]', ''),
+    'province': '${locationInfo['regeocode']?['addressComponent']?['province']}'
+        .replaceAll('[]', ''),
+    'city': '${locationInfo['regeocode']?['addressComponent']?['city']}'
+        .replaceAll('[]', ''),
+    'district': '${locationInfo['regeocode']?['addressComponent']?['district']}'
+        .replaceAll('[]', ''),
+  };
+}
+
+// {
+//     "status": "1",
+//     "regeocode": {
+//         "addressComponent": {
+//             "city": "西安市",
+//             "province": "陕西省",
+//             "adcode": "610113",
+//             "district": "雁塔区",
+//             "streetNumber": {
+//                 "number": "49号",
+//                 "direction": "东北",
+//                 "street": "科技西路"
+//             },
+//             "country": "中国",
+//             "township": "漳浒寨街道"
+//         }
+//     }
+// }
+
+Future<Map<String, dynamic>> getLocationInfo(
+    double longitude, double latitude) async {
+  const String apiKey = 'f7d40927ba4d64fb91ebe2bb9cda0995';
+  final String url =
+      'https://lbs.amap.com/_AMapService/v3/geocode/regeo?key=$apiKey&s=rsv3&language=zh_cn&location=$longitude,$latitude&sdkversion=1.4.24';
+
+  try {
+    final response = await http.get(Uri.parse(url),
+        headers: {'referer': 'https://lbs.amap.com/tools/picker'});
+    if (response.statusCode == 200) {
+      return json.decode(response.body) as Map<String, dynamic>;
+    } else {
+      throw Exception('Failed to load location information');
+    }
+  } catch (e) {
+    throw Exception('Error: $e');
   }
 }

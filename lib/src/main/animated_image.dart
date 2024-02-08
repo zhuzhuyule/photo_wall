@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:photo_wall/src/utils/file.dart';
+import 'package:photo_wall/src/utils/image_api_helper.dart';
+import 'package:photo_wall/src/utils/tool.dart';
 import 'image_loader.dart';
 
 class AnimationImage extends StatefulWidget {
@@ -40,9 +42,12 @@ class _AnimationImageState extends State<AnimationImage>
   late bool isShowAll = false;
   late bool isLoaded = false;
 
+  late Map<String, dynamic>? imageInfo;
+
   @override
   initState() {
     super.initState();
+    imageInfo = null;
 
     leftController = getController(seconds: 122);
     leftAnimation = getAnimation(
@@ -73,6 +78,13 @@ class _AnimationImageState extends State<AnimationImage>
           key: ValueKey(widget.url),
           src: widget.url,
           onLoaded: (path) {
+            getImageInfo(path).then(
+              (value) {
+                imageInfo = value;
+                setState(() {});
+              },
+            );
+
             setState(() {
               isLoaded = true;
             });
@@ -123,7 +135,37 @@ class _AnimationImageState extends State<AnimationImage>
                                     width: 6, // 边框宽度
                                   ),
                                 ),
-                                child: child),
+                                child: Stack(
+                                  children: [
+                                    child!,
+                                    if (imageInfo != null)
+                                      Positioned(
+                                        bottom: 0,
+                                        left: 0,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          color: Colors.black.withOpacity(0.3),
+                                          child: Column(
+                                            children: [
+                                              if (imageInfo!['province'] != '')
+                                                Text(
+                                                  '${imageInfo!['province']}·${imageInfo!['city']}',
+                                                  style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 10),
+                                                ),
+                                              Text(
+                                                formatDate(imageInfo!['time']),
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 9),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                )),
                           ),
                         );
                       }),
