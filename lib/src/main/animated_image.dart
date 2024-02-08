@@ -114,27 +114,28 @@ class _AnimationImageState extends State<AnimationImage>
                         getSizeOfContainer();
                         return FractionallySizedBox(
                           heightFactor: 0.75,
-                          child: GestureDetector(
-                            onTap: () {
-                              if (widget.previewImage == '') {
-                                widget.onPreview?.call(widget.url);
-                              }
-                            },
-                            child: Container(
-                                key: _containerKey,
-                                decoration: BoxDecoration(
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.black54,
-                                      blurRadius: 10.0,
-                                      offset: Offset(0, 10.0),
-                                    )
-                                  ],
-                                  border: Border.all(
-                                    color: Colors.white,
-                                    width: 6, // 边框宽度
-                                  ),
+                          child: Container(
+                              key: _containerKey,
+                              decoration: BoxDecoration(
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black54,
+                                    blurRadius: 10.0,
+                                    offset: Offset(0, 10.0),
+                                  )
+                                ],
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 6, // 边框宽度
                                 ),
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  print('------------');
+                                  if (widget.previewImage == '') {
+                                    widget.onPreview?.call(widget.url);
+                                  }
+                                },
                                 child: Stack(
                                   children: [
                                     child!,
@@ -165,8 +166,8 @@ class _AnimationImageState extends State<AnimationImage>
                                         ),
                                       ),
                                   ],
-                                )),
-                          ),
+                                ),
+                              )),
                         );
                       }),
                     ),
