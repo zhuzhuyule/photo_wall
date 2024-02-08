@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:photo_wall/src/const.dart';
 
 class ImageApiHelper {
   static final ImageApiHelper _instance = ImageApiHelper._internal();
@@ -37,9 +38,11 @@ class ImageApiHelper {
 
         return FutureResult('', audioFiles);
       } else {
+        toast('Failed to load files.${response.statusCode}');
         return FutureResult('Failed to load files.${response.statusCode}', []);
       }
     } catch (e) {
+      toast('Failed to load files.$e');
       FutureResult('$e', []);
     }
     return FutureResult('Failed to load files', []);

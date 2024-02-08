@@ -4,6 +4,7 @@ import 'package:photo_wall/src/favorite/favorite_button.dart';
 import 'package:photo_wall/src/favorite/favorite_list.dart';
 import 'package:photo_wall/src/utils/image_api_helper.dart';
 
+import '../../const.dart';
 import 'network_window.dart';
 
 class NetworkBrowser extends StatefulWidget {
@@ -49,6 +50,7 @@ class _NetworkBrowserState extends State<NetworkBrowser> {
               IconButton(
                 icon: Icon(isOpen ? Icons.view_list_outlined : Icons.view_list),
                 onPressed: () {
+                  toast('查看收藏');
                   isOpen = !isOpen;
                   setState(() {});
                 },

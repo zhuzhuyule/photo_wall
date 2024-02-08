@@ -44,7 +44,7 @@ class _ExplorerViewState extends State<ExplorerView> {
         title: const Text('选择图片目录'),
       ),
       body: const NetworkBrowser(
-        dir: '',
+        dir: '/',
       ),
       // body: FileBrowser(
       //   dir: dir,

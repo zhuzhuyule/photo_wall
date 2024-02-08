@@ -172,7 +172,7 @@ class _AnimationImageState extends State<AnimationImage>
 
       double width = renderBox.size.width;
 
-      if (!isShowAll && leftAnimation.value + width + 100 < screenWidth) {
+      if (!isShowAll && leftAnimation.value + width + 50 < screenWidth) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           setState(() {
             isShowAll = true;
